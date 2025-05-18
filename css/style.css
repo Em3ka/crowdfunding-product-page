@@ -91,8 +91,8 @@
     :root {
       --clr-white: hsl(0, 0%, 100%);
       --clr-black: hsl(0, 0%, 0%);
-      --clr-black-900: hsl(0, 0%, 18%);
       --clr-gray-400: hsl(0, 0%, 48%);
+      --clr-gray-900: hsl(0, 0%, 18%);
       --clr-cyan-400: hsl(176, 50%, 47%);
       --clr-cyan-500: hsl(176, 72%, 28%);
 
@@ -141,10 +141,11 @@
       --border-radius-1: 0.5rem;
       --border-radius-2: 2.0938rem;
 
-      --clr-accent-5: hsl(from var(--clr-accent-secondary) h s l / 0.05);
-      --clr-black-5: hsl(from var(--clr-black-900) h s l / 0.05);
-      --clr-black-10: hsl(from var(--clr-black-900) h s l / 0.1);
+      --clr-gray-alpha: hsl(
+        from var(--clr-gray-900) h s l / var(--alpha, 0.05)
+      );
       --clr-black-15: hsl(from var(--clr-black) h s l / 0.15);
+      --clr-accent-5: hsl(from var(--clr-accent-secondary) h s l / 0.05);
       --clr-primary-15: hsl(from var(--primary-color) h s l / 0.15);
     }
   }
@@ -234,6 +235,36 @@
 }
 
 @layer components {
+  .skip-to-main {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(-120%);
+    background-color: var(--clr-accent-secondary);
+    color: var(--background-primary);
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--border-radius-1);
+    text-decoration: none;
+    z-index: 9999;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .skip-to-main:focus {
+    transform: translateX(-50%) translateY(0); /* Slide down when focused */
+    outline: 2px solid var(--background-primary);
+    outline-offset: 4px;
+  }
+
+  .skip-to-main:not(:focus) {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
   .site-header {
     position: relative;
     padding-block: 3rem 3.75rem;
@@ -320,6 +351,7 @@
       flex-wrap: wrap;
       gap: 2rem;
       font-weight: var(--fw-medium);
+      list-style: none;
     }
 
     @media (width < 760px) {
@@ -368,7 +400,8 @@
         }
 
         + li {
-          border-top: 1px solid var(--clr-black-10);
+          --alpha: 0.1;
+          border-top: 1px solid var(--clr-gray-alpha);
         }
       }
 
@@ -436,13 +469,29 @@
     }
   }
 
-  div[role='button'] {
+  .button--bookmark {
     --btn-padding-block: unset;
     --btn-padding-inline: 0 1.5rem;
     --btn-color: var(--primary-color);
-    --btn-bg-color: var(--clr-black-5);
+    --btn-bg-color: var(--clr-gray-alpha);
     --btn-hover-bg-color: var(--clr-accent-5);
     --btn-hover-color: var(--clr-accent-secondary);
+
+    /* Style "bookmarked" state */
+    &[aria-pressed='true'] {
+      --btn-color: var(--clr-accent-secondary);
+      --btn-bg-color: var(--clr-accent-5);
+
+      svg {
+        circle {
+          fill: var(--clr-accent-secondary);
+        }
+
+        path {
+          fill: var(--background-primary);
+        }
+      }
+    }
 
     &:hover,
     &:focus-visible {
@@ -471,22 +520,6 @@
     }
   }
 
-  /* Style for bookmark button when pressed (bookmarked state) */
-  div[aria-pressed='true'] {
-    --btn-color: var(--clr-accent-secondary);
-    --btn-bg-color: var(--clr-accent-5);
-
-    svg {
-      circle {
-        fill: var(--clr-accent-secondary);
-      }
-
-      path {
-        fill: var(--background-primary);
-      }
-    }
-  }
-
   .hero {
     --margin-top: 9.5rem;
     --padding-block: 3.5rem 3rem;
@@ -501,6 +534,7 @@
   }
 
   .progressbar::before {
+    will-change: width;
     content: '';
     position: absolute;
     height: 100%;
@@ -740,15 +774,16 @@
   }
 
   .pledge-input {
-    height: 3rem;
-    width: 6.25rem;
+    --alpha: 0.15;
 
     display: flex;
     align-items: center;
     column-gap: 0.5rem;
+    height: 3rem;
+    width: 7.5rem;
     padding: 1rem 1.5rem;
     font-weight: var(--fw-bold);
-    border: 1px solid var(--clr-black-15);
+    border: 1px solid var(--clr-gray-alpha);
     border-radius: var(--border-radius-2);
 
     &:focus-within {
@@ -826,7 +861,7 @@
     }
   }
 
-  .modal--success {
+  .modal--message {
     --modal-padding: 48px;
 
     display: grid;
@@ -855,7 +890,7 @@
   .overlay {
     position: fixed;
     inset: 0;
-    background-color: var(--clr-black-5);
+    background-color: var(--clr-gray-alpha);
     backdrop-filter: blur(1px);
     z-index: 5;
   }
@@ -966,16 +1001,8 @@
     font-size: var(--font-size-heading-xl);
   }
 
-  .heading-xxl {
-    font-size: var(--font-size-heading-xxl);
-  }
-
   .primary-color {
     color: var(--primary-color);
-  }
-
-  .background-primary {
-    background-color: var(--background-primary);
   }
 
   .primary-accent {

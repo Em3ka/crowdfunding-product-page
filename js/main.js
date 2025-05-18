@@ -3,7 +3,7 @@ const btnBookmark = document.getElementById('btnBookmark');
 const btnDismiss = document.getElementById('btnDismiss');
 const btnCloseModal = document.getElementById('closeModal');
 const pledgeModal = document.getElementById('pledgeModal');
-const successModal = document.getElementById('successModal');
+const messageModal = document.getElementById('messageModal');
 const messageEl = document.getElementById('modalMessage');
 const progressBar = document.getElementById('progressBar');
 const backers = document.getElementById('backersCount');
@@ -13,12 +13,13 @@ const pledgeList = document.getElementById('pledgeList');
 const modalList = document.getElementById('modalList');
 const overlay = document.getElementById('overlay');
 const navToggle = document.querySelector('[aria-controls="primary-nav"]');
-const pledgeCards = document.querySelectorAll('#pledgeCard');
+const pledgeCards = document.querySelectorAll('.pledgeCard');
 
 const pledgeData = {
   backed: Number(backed.dataset.value) || 89914,
   backers: Number(backers.dataset.value) || 5007,
   days: Number(daysLeft.dataset.value) || 56,
+  goalAmount: 100000,
 };
 
 const toggleBookmark = function (isBookmarked) {
@@ -99,7 +100,7 @@ const togglePledgeModal = function () {
 
 const renderMessageModal = function () {
   toggleModal(pledgeModal, true);
-  toggleModal(successModal);
+  toggleModal(messageModal);
 };
 
 const formatNumber = (number, isCurrency = false) => {
@@ -123,7 +124,7 @@ const resetPledgeContainer = function () {
 const updateCardState = function (card, newCount) {
   if (!card) return;
 
-  const countElement = card.querySelector('.pledge-count');
+  const countElement = card.querySelector('.pledgeCount');
   if (countElement) countElement.textContent = newCount;
 
   // Update the data attribute
@@ -147,7 +148,7 @@ const updateCardState = function (card, newCount) {
 const updatePledge = function (pledgeId, newCount, pledgeAmount) {
   if (pledgeAmount !== 0) pledgeData.backed += pledgeAmount;
 
-  // pledgeData.backed += pledgeAmount;
+  // Save pledge data to localStorage
   localStorage.setItem('pledgeData', JSON.stringify(pledgeData));
 
   // Update UI stats
@@ -160,10 +161,10 @@ const updatePledge = function (pledgeId, newCount, pledgeAmount) {
   daysLeft.textContent = pledgeData.days;
   daysLeft.dataset.value = pledgeData.days;
 
-  // Update cards
+  // Update cards in pledge list and pledge modal
   const cards = [
-    document.querySelector(`.pledge-list .card[data-id="${pledgeId}"]`),
-    document.querySelector(`.modal .card[data-id="${pledgeId}"]`),
+    document.querySelector(`#pledgeList .card[data-id="${pledgeId}"]`),
+    document.querySelector(`#pledgeModal .card[data-id="${pledgeId}"]`),
   ];
 
   cards.forEach((card) => updateCardState(card, newCount));
@@ -238,10 +239,63 @@ const updateModalMessage = function (messageType = 'default') {
 
   // Update message content
   messageEl.innerHTML = `
-      <h2 class="heading-lg">${messageConfig.title}</h2>
+      <h2 id="modalHeading" class="heading-lg">${messageConfig.title}</h2>
       <p>${messageConfig.message}</p>`;
   renderMessageModal();
 };
+
+const createPledgeHTML = function () {
+  const defaultPledgeHTML = `
+    <li class="card flow" data-id="0" data-count="-1">
+      <div class="card-grid">
+        <input type="radio" name="pledge" id="pledge-0" />
+        <div class="flex-group ln-tight">
+          <label for="pledge-0" class="form-control heading-sm fw-bold">
+            Pledge with no reward
+          </label>
+        </div>
+        <p class="text-sm">
+          Choose to support us without a reward if you simply believe in our
+          project. As a backer, you will be signed up to receive product
+          updates via email.
+        </p>
+      </div>
+    </li>`;
+
+  modalList.insertAdjacentHTML('beforeend', defaultPledgeHTML);
+
+  pledgeCards.forEach((card) => {
+    const title = card.querySelector('.pledgeTitle').textContent;
+    const amount = card.querySelector('.pledgeAmount').textContent;
+    const message = card.querySelector('.pledgeMessage').textContent;
+    const count = Number(card.querySelector('.pledgeCount').textContent);
+
+    const dollarAmount = Number(amount.match(/\$(\d+)/)[1]);
+
+    const pledgeHTML = ` 
+      <li class="card flow ${count === 0 ? 'card--out-of-stock' : ''}" 
+          data-id="${dollarAmount}" data-count="${count}">
+        <div class="card-grid">
+          <input type="radio" name="pledge" id="pledge-${dollarAmount}" 
+              ${count === 0 ? 'disabled' : ''}/>
+          <div class="flex-group ln-tight">
+            <label for="pledge-${dollarAmount}" class="form-control heading-sm fw-bold">
+              ${title}
+            </label>
+            <span class="primary-accent fw-medium">${amount}</span>
+          </div>
+          <h4><span class="pledgeCount count text-horizontal">${count}</span>
+            <span class="text-x-sm primary-color fw-regular">left</span>
+          </h4>
+          <p class="text-sm">${message}</p>
+        </div>
+      </li>`;
+
+    modalList.insertAdjacentHTML('beforeend', pledgeHTML);
+  });
+};
+
+createPledgeHTML();
 
 navToggle.addEventListener('click', () => {
   const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
@@ -256,36 +310,6 @@ navToggle.addEventListener('click', () => {
 btnBookmark.addEventListener('click', () => {
   const isBookmarked = JSON.parse(localStorage.getItem('bookmark')) || false;
   toggleBookmark(!isBookmarked);
-});
-
-pledgeCards.forEach((card) => {
-  const title = card.querySelector('#pledgeTitle').textContent;
-  const amount = card.querySelector('#pledgeAmount').textContent;
-  const message = card.querySelector('#pledgeMessage').textContent;
-  const count = Number(card.querySelector('#pledgeCount').textContent);
-
-  const dollarAmount = Number(amount.match(/\$(\d+)/)[1]);
-
-  const pledgeHTML = ` 
-        <li class="card flow ${count === 0 ? 'card--out-of-stock' : ''}" 
-            data-id="${dollarAmount}" data-count="${count}">
-          <div class="card-grid">
-            <input type="radio" name="pledge" id="pledge-${dollarAmount}" 
-               ${count === 0 ? 'disabled' : ''}/>
-            <div class="flex-group ln-tight">
-              <label for="pledge-${dollarAmount}" class="form-control heading-sm fw-bold">
-                ${title}
-              </label>
-              <span class="primary-accent fw-medium">${amount}</span>
-            </div>
-            <h4><span class="count text-horizontal pledge-count">${count}</span>
-              <span class="text-x-sm primary-color fw-regular">left</span>
-            </h4>
-            <p class="text-sm">${message}</p>
-          </div>
-        </li>`;
-
-  modalList.insertAdjacentHTML('beforeend', pledgeHTML);
 });
 
 pledgeList.addEventListener('click', (e) => {
@@ -333,28 +357,39 @@ modalList.addEventListener('click', (e) => {
     // Remove any existing pledge containers
     resetPledgeContainer();
 
-    // HTML to inject when radio is selected
-    const pledgeHTML = `
-      <div class="pledge-container">
-        <form class="pledge-form" data-pledge-id='${id}' data-current-count='${count}' >
-          <label for="amount" class="text-sm primary-color">
-            Enter your pledge
-          </label>
-          <div class="flex-group">
-            <div class="pledge-input">
-              <span class="currency" aria-hidden="true"> $ </span>
-              <input 
-                type="number" 
-                name="amount" 
-                id="amount" 
-                value="${id}" 
-                min="${id}" 
-                required />
-            </div>
-            <button type="submit" class="button button--continue btnContinue">
-                Continue
-            </button>
-          </div>
+    // Different HTML for default pledge (no minimum amount)
+    const pledgeHTML =
+      id === 0
+        ? ` <div class="pledge-container">
+              <form class="pledge-form" data-pledge-id='${id}' data-current-count='${count}'>
+                <div class="flex-group">
+                  <button type="submit" class="button button--continue"> 
+                    Continue 
+                  </button>
+                </div>
+              </form>
+            </div>`
+        : `
+          <div class="pledge-container">
+            <form class="pledge-form" data-pledge-id='${id}' data-current-count='${count}' >
+              <label for="amount" class="text-sm primary-color">
+                Enter your pledge
+              </label>
+              <div class="flex-group">
+                <div class="pledge-input">
+                  <span class="currency" aria-hidden="true"> $ </span>
+                  <input 
+                    type="number" 
+                    name="amount" 
+                    id="amount" 
+                    value="${id}" 
+                    min="${id}" 
+                    step="1"
+                    aria-label="Pledge amount in dollars"
+                    required />
+                </div>
+                <button type="submit" class="button button--continue"> Continue </button>
+              </div>
         </form>
       </div> `;
 
@@ -366,15 +401,17 @@ modalList.addEventListener('click', (e) => {
 document.addEventListener('submit', (e) => {
   if (e.target.matches('.pledge-form')) {
     e.preventDefault();
-    const form = e.target;
-    const { pledgeId, currentCount } = form.dataset;
-    const amountPledged = Number(document.getElementById('amount').value);
-    const goalAmount = 100000;
+    const { pledgeId, currentCount } = e.target.dataset;
+    const amountInput = Number(document.getElementById('amount').value);
+    const count = Number(currentCount);
 
-    if (currentCount > 0) {
-      const newCount = currentCount - 1;
+    // For pledges with no reward (id === '0'), default to 1 if no amount input
+    const amountPledged = amountInput ? amountInput : 1;
 
-      if (pledgeData.backed >= goalAmount) {
+    if (count > 0 || count === -1) {
+      const newCount = count === -1 ? -1 : count - 1;
+
+      if (pledgeData.backed >= pledgeData.goalAmount) {
         updateModalMessage('alreadyReached');
         return; // Exit early - no more pledges accepted
       }

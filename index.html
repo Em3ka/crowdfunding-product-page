@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- displays site properly based on user's device -->
 
     <link
       rel="icon"
@@ -17,6 +16,7 @@
     <title>Frontend Mentor | Crowdfunding product page</title>
   </head>
   <body>
+    <a class="skip-to-main" href="#main">Skip to main content</a>
     <header class="site-header">
       <div class="wrapper">
         <div class="site-header__inner">
@@ -34,7 +34,7 @@
             <span class="line"></span>
           </button>
           <nav id="primary-nav" class="primary-navigation">
-            <ul role="list" role="menu" aria-label="main menu">
+            <ul role="menu" aria-label="main menu">
               <li><a href="#" role="menuitem">About</a></li>
               <li><a href="#" role="menuitem">Discover</a></li>
               <li><a href="#" role="menuitem">Get Started</a></li>
@@ -44,7 +44,7 @@
       </div>
     </header>
 
-    <main class="wrapper" data-width="narrow">
+    <main id="main" class="wrapper" data-width="narrow">
       <section class="hero section">
         <img src="/assets/images/logo-mastercraft.svg" alt="Mastercraft logo" />
         <div class="text-center flow">
@@ -57,12 +57,11 @@
             <button id="btnBackProject" class="button">
               Back this project
             </button>
-            <div
+            <button
               id="btnBookmark"
-              role="button"
               aria-pressed="false"
               aria-label="Bookmark this project"
-              class="button"
+              class="button button--bookmark"
             >
               <svg width="56" height="56" xmlns="http://www.w3.org/2000/svg">
                 <g fill="none" fill-rule="evenodd">
@@ -71,7 +70,7 @@
                 </g>
               </svg>
               <span>Bookmark</span>
-            </div>
+            </button>
           </div>
         </div>
       </section>
@@ -99,7 +98,15 @@
           </div>
         </div>
         <!-- pledge progress bar -->
-        <div id="progressBar" class="progressbar"></div>
+        <div
+          id="progressBar"
+          class="progressbar"
+          role="progressbar"
+          aria-valuenow="89914"
+          aria-valuemin="0"
+          aria-valuemax="100000"
+          aria-label="Campaign progress"
+        ></div>
       </section>
 
       <section class="section flow">
@@ -120,69 +127,61 @@
         </div>
         <!-- Three cards -->
         <ul id="pledgeList" class="flow card-group pledge-list" role="list">
-          <li id="pledgeCard" class="card flow" data-id="25">
+          <li class="pledgeCard card flow" data-id="25">
             <div class="flex-group">
-              <h3 id="pledgeTitle" class="heading-sm">Bamboo Stand</h3>
-              <p id="pledgeAmount" class="primary-accent text-sm fw-medium">
+              <h3 class="pledgeTitle heading-sm">Bamboo Stand</h3>
+              <p class="pledgeAmount primary-accent text-sm fw-medium">
                 Pledge $25 or more
               </p>
             </div>
-            <p id="pledgeMessage">
+            <p class="pledgeMessage">
               You get an ergonomic stand made of natural bamboo. You've helped
               us launch our promotional campaign, and you’ll be added to a
               special Backer member list.
             </p>
             <div class="flex-group">
               <p>
-                <span id="pledgeCount" class="count text-horizontal">
-                  101
-                </span>
+                <span class="pledgeCount count text-horizontal"> 101 </span>
                 <span class="text-x-sm">left</span>
               </p>
-              <button class="button" href="#">Select Reward</button>
+              <button class="button">Select Reward</button>
             </div>
           </li>
-          <li id="pledgeCard" class="card flow" data-id="75">
+          <li class="pledgeCard card flow" data-id="75">
             <div class="flex-group">
-              <h3 id="pledgeTitle" class="heading-sm">Black Edition</h3>
-              <p id="pledgeAmount" class="primary-accent text-sm fw-medium">
+              <h3 class="pledgeTitle heading-sm">Black Edition</h3>
+              <p class="pledgeAmount primary-accent text-sm fw-medium">
                 Pledge $75 or more
               </p>
             </div>
-            <p id="pledgeMessage">
+            <p class="pledgeMessage">
               Stand Pledge $75 or more You get a Black Special Edition computer
               stand and a personal thank you. You’ll be added to our Backer
               member list. Shipping is included.
             </p>
             <div class="flex-group">
               <p>
-                <span id="pledgeCount" class="count text-horizontal"> 64 </span>
+                <span class="pledgeCount count text-horizontal"> 64 </span>
                 <span class="text-x-sm">left</span>
               </p>
-              <button class="button" href="#">Select Reward</button>
+              <button class="button">Select Reward</button>
             </div>
           </li>
-          <li
-            id="pledgeCard"
-            class="card flow card--out-of-stock"
-            data-id="200"
-          >
+          <li class="pledgeCard card flow card--out-of-stock" data-id="200">
             <div class="flex-group">
-              <h3 id="pledgeTitle" class="heading-sm">
-                Mahogany Special Edition
-              </h3>
-              <p id="pledgeAmount" class="primary-accent text-sm fw-medium">
+              <h3 class="pledgeTitle heading-sm">Mahogany Special Edition</h3>
+              <p class="pledgeAmount primary-accent text-sm fw-medium">
                 Pledge $200 or more
               </p>
             </div>
-            <p id="pledgeMessage">
+            <p class="pledgeMessage">
               You get two Special Edition Mahogany stands, a Backer T-Shirt, and
               a personal thank you. You’ll be added to our Backer member list.
               Shipping is included.
             </p>
             <div class="flex-group">
               <p>
-                <span id="pledgeCount" class="count text-horizontal"> 0 </span>
+                <span class="pledgeCount count text-horizontal"> 0 </span>
                 <span class="text-x-sm">left</span>
               </p>
               <button disabled class="button">Out of Stock</button>
@@ -193,13 +192,21 @@
     </main>
 
     <!-- Pledge modal start -->
-    <div id="pledgeModal" class="modal modal--pledge" hidden>
+    <div
+      id="pledgeModal"
+      class="modal modal--pledge"
+      role="dialog"
+      aria-labelledby="modalTitle"
+      hidden
+    >
       <svg
+        xmlns="http://www.w3.org/2000/svg"
         id="closeModal"
         class="close-modal"
         width="15"
         height="15"
-        xmlns="http://www.w3.org/2000/svg"
+        role="button"
+        aria-label="Close modal"
       >
         <path
           d="M11.314 0l2.828 2.828L9.9 7.071l4.243 4.243-2.828 2.828L7.07 9.9l-4.243 4.243L0 11.314 4.242 7.07 0 2.828 2.828 0l4.243 4.242L11.314 0z"
@@ -209,44 +216,30 @@
         />
       </svg>
       <div class="flow">
-        <h2 class="heading-md">Back this project</h2>
+        <h2 id="modalTitle" class="heading-md">Back this project</h2>
         <p class="text-md">
           Want to support us in bringing Mastercraft Bamboo Monitor Riser out in
           the world?
         </p>
       </div>
-      <ul id="modalList" class="flow card-group modal__pledge-list" role="list">
-        <!-- Default pledge card -->
-        <li class="card flow" data-id="0">
-          <div class="card-grid">
-            <input type="radio" name="pledge" id="pledge-0" />
-            <div class="flex-group ln-tight">
-              <label for="pledge-0" class="form-control heading-sm fw-bold">
-                Pledge with no reward
-              </label>
-            </div>
-            <p class="text-sm">
-              Choose to support us without a reward if you simply believe in our
-              project. As a backer, you will be signed up to receive product
-              updates via email.
-            </p>
-          </div>
-        </li>
-      </ul>
+      <ul
+        id="modalList"
+        class="flow card-group modal__pledge-list"
+        role="list"
+      ></ul>
     </div>
     <!-- Pledge modal end -->
 
-    <!-- Success modal start -->
-    <div id="successModal" class="modal modal--success" hidden>
+    <!-- Message modal start -->
+    <div
+      id="messageModal"
+      class="modal modal--message"
+      role="dialog"
+      aria-labelledby="modalHeading"
+      hidden
+    >
       <div class="modal__icon"></div>
-      <div id="modalMessage" class="modal__message flow">
-        <h2 class="heading-md">Thanks for your support!</h2>
-        <p>
-          Your pledge brings us one step closer to sharing Mastercraft Bamboo
-          Monitor Riser worldwide. You will get an email once our campaign is
-          completed.
-        </p>
-      </div>
+      <div id="modalMessage" class="modal__message flow"></div>
       <button id="btnDismiss" class="button">Got it!</button>
     </div>
     <!-- Success modal end -->
