@@ -899,6 +899,8 @@
     position: absolute;
     top: 2rem;
     right: 2rem;
+    border: 0;
+    background: transparent;
     cursor: pointer;
 
     &:hover,

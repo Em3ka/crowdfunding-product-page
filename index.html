@@ -33,8 +33,12 @@
             <span class="line"></span>
             <span class="line"></span>
           </button>
-          <nav id="primary-nav" class="primary-navigation">
-            <ul aria-label="main menu">
+          <nav
+            id="primary-nav"
+            class="primary-navigation"
+            aria-label="Main menu"
+          >
+            <ul>
               <li><a href="#">About</a></li>
               <li><a href="#">Discover</a></li>
               <li><a href="#">Get Started</a></li>
@@ -199,22 +203,21 @@
       aria-labelledby="modalTitle"
       hidden
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        id="closeModal"
-        class="close-modal"
-        width="15"
-        height="15"
-        role="button"
-        aria-label="Close modal"
-      >
-        <path
-          d="M11.314 0l2.828 2.828L9.9 7.071l4.243 4.243-2.828 2.828L7.07 9.9l-4.243 4.243L0 11.314 4.242 7.07 0 2.828 2.828 0l4.243 4.242L11.314 0z"
-          fill="#000"
-          fill-rule="evenodd"
-          opacity=".4"
-        />
-      </svg>
+      <button id="closeModal" class="close-modal" aria-label="Close modal">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="15"
+          height="15"
+          aria-hidden="true"
+        >
+          <path
+            d="M11.314 0l2.828 2.828L9.9 7.071l4.243 4.243-2.828 2.828L7.07 9.9l-4.243 4.243L0 11.314 4.242 7.07 0 2.828 2.828 0l4.243 4.242L11.314 0z"
+            fill="#000"
+            fill-rule="evenodd"
+            opacity=".4"
+          />
+        </svg>
+      </button>
       <div class="flow">
         <h2 id="modalTitle" class="heading-md">Back this project</h2>
         <p class="text-md">
