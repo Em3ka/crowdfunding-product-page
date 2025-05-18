@@ -239,7 +239,7 @@ const updateModalMessage = function (messageType = 'default') {
 
   // Update message content
   messageEl.innerHTML = `
-      <h2 id="modalHeading" class="heading-lg">${messageConfig.title}</h2>
+      <h2 class="heading-lg">${messageConfig.title}</h2>
       <p>${messageConfig.message}</p>`;
   renderMessageModal();
 };
